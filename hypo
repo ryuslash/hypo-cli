@@ -1,0 +1,109 @@
+#!/bin/sh
+# hypo-cli -- Easily communicate with hypo
+# Copyright (C) 2013  Tom Willemse
+#
+# This file is part of hypo-cli
+#
+# hypo-cli is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# hypo-cli is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with hypo-cli. If not, see <http://www.gnu.org/licenses/>.
+
+URL="https://ryuslash.org/hypo"
+
+function help_send
+{
+    echo "Usage: $xname send FILE"
+    echo
+    echo "FILE will be uploaded to a hypo instance and the URL at which it can be visited"
+    echo "will be printed."
+}
+
+function cmd_send
+{
+    if [[ -z "$1" ]]; then
+        help "send"
+        exit 1
+    fi
+
+    curl --upload-file "$1" "$URL/"
+}
+
+function help_scrot
+{
+    echo "Usage: $xname scrot ARG"
+    echo
+    echo "The ARG will be passed directly to scrot. The resulting screenshot will be sent"
+    echo "directly to hypo and removed locally."
+}
+
+function cmd_scrot
+{
+    scrot $1 -e "curl --upload-file \$f $URL/ && rm \$f"
+}
+
+function help_rm
+{
+    echo "Usage: $xname rm HASH"
+    echo
+    echo "Remove a file from hypo. The HASH under which it is stored remotely (the last"
+    echo "part of the URL) should be specified."
+}
+
+function cmd_rm
+{
+    if [[ -z "$1" ]]; then
+        help "rm"
+        exit 1
+    fi
+    curl -XDELETE "$URL/$1"
+}
+
+function help_help { cmd_help "$@"; }
+function cmd_help
+{
+    local xname="$(basename $0)"
+
+    if [[ -n "$1" ]]; then
+        local prefix="help"
+        dispatch "$@"
+    else
+        echo "Usage: $xname <command> [OPT ...] [ARG ...]"
+        echo
+        echo "Commands include: "
+        echo "  help    Show this help message"
+        echo "  rm      Remove a file from a hypo instance"
+        echo "  scrot   Take a screenshot and send it to a hypo instance"
+        echo "  send    Send a file to a hypo instance"
+        echo
+        echo "You can use \`$xname help <command>' to get more information about a command."
+    fi
+}
+
+function dispatch
+{
+    local name="${prefix-cmd}_$1"
+
+    if [[ $(type -t "$name") == "function" ]]; then
+        shift
+        "$name" "$@"
+    else
+        echo "Unknown command: $1"
+        exit 1
+    fi
+}
+
+if [[ ${#@} -lt 1 ]]; then
+    cmd_help "$@"
+    exit 1
+else
+    dispatch "$@"
+fi

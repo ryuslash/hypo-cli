@@ -1,0 +1,3 @@
+* CLI companion for Hypo
+
+  ~hypo-cli~ is a command-line interface for communicating with Hypo.
