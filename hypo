@@ -30,7 +30,7 @@ function help_send
 function cmd_send
 {
     if [[ -z "$1" ]]; then
-        help "send"
+        cmd_help "send"
         exit 1
     fi
 
@@ -61,7 +61,7 @@ function help_rm
 function cmd_rm
 {
     if [[ -z "$1" ]]; then
-        help "rm"
+        cmd_help "rm"
         exit 1
     fi
     curl -XDELETE "$URL/$1"
