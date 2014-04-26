@@ -22,19 +22,37 @@ URL="https://ryuslash.org/hypo"
 function help_send
 {
     echo "Usage: $xname send FILE"
+    echo "       $xname send [SUFFIX]"
     echo
-    echo "FILE will be uploaded to a hypo instance and the URL at which it can be visited"
-    echo "will be printed."
+    echo "Using the first form FILE will be uploaded to a hypo instance and the URL at "
+    echo "which it can be visited will be printed."
+    echo
+    echo "Using the second form requires that input come from a pipe. Such as:"
+    echo
+    echo "    cat somefile.txt | hypo send"
+    echo
+    echo "In this case the argument to send is optional, if it is specified it should "
+    echo "include a \`.' to help pygments decide on the syntax highlighting to use. If the "
+    echo "argument is left unspecified it defaults to \`.txt'."
 }
 
 function cmd_send
 {
-    if [[ -z "$1" ]]; then
+    if [[ ! -t 0 ]]; then
+        sendfile="$(mktemp --suffix ${1-.txt})"
+        cat - > "$sendfile"
+    elif [[ -z "$1" ]]; then
         cmd_help "send"
         exit 1
+    else
+        sendfile="$1"
     fi
 
-    curl --upload-file "$1" "$URL/"
+    curl --upload-file "$sendfile" "$URL/"
+
+    if [[ -t 0 ]]; then
+        rm "$sendfile"
+    fi
 }
 
 function help_scrot

@@ -35,8 +35,9 @@
           found in the URL) to remove.
   - =scrot= :: Run [[http://freecode.com/projects/scrot][scrot]] to take a screen shot and upload it to hypo.
              All arguments given are passed directly to ~scrot~.
-  - =send= :: Upload a file to hypo. It requires one argument: the file
-            to send to hypo.
+  - =send= :: Upload a file to hypo. It can either accept output from
+            another process, or it needs the name of a file as a
+            first parameter.
 
 * License
 
