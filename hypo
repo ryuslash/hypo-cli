@@ -38,14 +38,14 @@ function help_send
 
 function cmd_send
 {
+    local sendfile="$1"
+
     if [[ ! -t 0 ]]; then
         sendfile="$(mktemp --suffix ${1-.txt})"
         cat - > "$sendfile"
     elif [[ -z "$1" ]]; then
         cmd_help "send"
         exit 1
-    else
-        sendfile="$1"
     fi
 
     curl --upload-file "$sendfile" "$URL/"
