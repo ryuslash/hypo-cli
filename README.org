@@ -1,3 +1,56 @@
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+
 * CLI companion for Hypo
 
-  ~hypo-cli~ is a command-line interface for communicating with Hypo.
+  ~hypo-cli~ is a command-line interface for communicating with [[http://code.ryuslash.org/hypo/][Hypo]]. It
+  helps ease some of the possible options when communicating with
+  Hypo.
+
+* Installation
+
+  To install =hypo-cli= you could use [[http://code.ryuslash.org/sti/about/][sti]], like so:
+
+  : sti install git://ryuslash.org/hypo-cli.git
+
+  Alternatively you could also fetch the code manually (either using
+  ~git~ or downloading a ~.tar.gz~ or ~.zip~ file).
+
+  : git clone git://ryuslash.org/hypo-cli.git && cd sti
+  : # Or
+  : wget http://code.ryuslash.org/hypo-cli/snapshot/hypo-cli-master.tar.gz
+  : tar xf hypo-cli-master.tar.gz && cd hypo-cli-master
+
+  After running either of these command sets you should put the ~hypo~
+  executable somewhere in your =$PATH= to be able to start using it.
+
+* Usage
+
+  =hypo-cli= offers the following commands:
+
+  - =help= :: The help command shows a list of available commands, and
+            if the name of another command is specified will also show
+            a little explanation about that command.
+  - =rm= :: Remove a file from hypo. It needs the hash of the file (as
+          found in the URL) to remove.
+  - =scrot= :: Run [[http://freecode.com/projects/scrot][scrot]] to take a screen shot and upload it to hypo.
+             All arguments given are passed directly to ~scrot~.
+  - =send= :: Upload a file to hypo. It requires one argument: the file
+            to send to hypo.
+
+* License
+
+  hypo-cli is free software: you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  hypo-cli is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with hypo-cli. If not, see <http://www.gnu.org/licenses/>.
+
+  See [[http://code.ryuslash.org/cgit.cgi/hypo-cli/tree/COPYING][COPYING]] for more information.
