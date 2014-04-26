@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # hypo-cli -- Easily communicate with hypo
 # Copyright (C) 2013  Tom Willemse
 #
