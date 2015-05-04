@@ -18,8 +18,10 @@
 # along with hypo-cli. If not, see <http://www.gnu.org/licenses/>.
 
 URL="https://ryuslash.org/hypo"
+DATADIR=${XDG_DATA_HOME-"${HOME}/.local/share"}/hypo
 
 function fold () { /usr/bin/fold -s -w $(tput cols); }
+function ensuredir() { /usr/bin/mkdir -p "$1"; }
 
 function help_send
 {
@@ -43,6 +45,7 @@ defaults to \`.txt'." | fold
 function cmd_send
 {
     local sendfile="$1"
+    local url=""
 
     if [[ ! -t 0 ]]; then
         sendfile="$(mktemp --suffix ${1-.txt})"
@@ -52,7 +55,11 @@ function cmd_send
         exit 1
     fi
 
-    curl --upload-file "$sendfile" "$URL/"
+    ensuredir "$DATADIR"
+
+    url="$(curl --upload-file "$sendfile" "$URL/")"
+    echo $url
+    echo ${url#"${URL}/"} >> $DATADIR/uploads
 
     if [[ ! -t 0 ]]; then
         rm "$sendfile"
@@ -69,7 +76,9 @@ screenshot will be sent directly to hypo and removed locally."
 
 function cmd_scrot
 {
-    scrot $1 -e "curl --upload-file \$f $URL/ && rm \$f"
+    local url=$(scrot $1 -e "curl --upload-file \$f $URL/ && rm \$f")
+    echo $url
+    echo ${url#"${URL}/"} >> $DATADIR/uploads
 }
 
 function help_rm
@@ -86,7 +95,12 @@ function cmd_rm
         cmd_help "rm"
         exit 1
     fi
+
     curl -XDELETE "$URL/$1"
+
+    if [[ -e "$DATADIR/uploads" ]]; then
+        sed -i "/^$1$/ d" $DATADIR/uploads
+    fi
 }
 
 function help_help { cmd_help "$@"; }
