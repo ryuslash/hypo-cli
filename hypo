@@ -120,6 +120,9 @@ function cmd_help
         echo "  scrot   Take a screenshot and send it to a hypo instance"
         echo "  send    Send a file to a hypo instance"
         echo
+        echo "Server: ${URL}"
+        echo "Data dir: ${DATADIR}"
+        echo
         echo "You can use \`$xname help <command>' to get more \
 information about a command." | fold
     fi
@@ -137,6 +140,23 @@ function dispatch
         exit 1
     fi
 }
+
+TEMP=$(getopt --options s:d: --longoptions server:,data-dir: --name hypo -- "$@")
+if [[ $? != 0 ]]; then
+    echo "Couldn't parse arguments..."
+    exit 1
+fi
+
+eval set -- "$TEMP"
+
+while true; do
+    case "$1" in
+        -s|--server) URL="$2"; shift 2;;
+        -d|--data-dir) DATADIR="$2"; shift 2;;
+        --) shift; break;;
+        *) echo "Unknown argument: $1"; exit 1;;
+    esac
+done
 
 if [[ ${#@} -lt 1 ]]; then
     cmd_help "$@"
