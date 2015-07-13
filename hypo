@@ -76,7 +76,7 @@ screenshot will be sent directly to hypo and removed locally."
 
 function cmd_scrot
 {
-    local url=$(scrot $1 -e "curl --upload-file \$f $URL/ && rm \$f")
+    local url=$(scrot $1 -e "curl --upload-file \$f $URL/upload/ && rm \$f")
     echo $url
     echo ${url#"${URL}/"} >> $DATADIR/uploads
 }
