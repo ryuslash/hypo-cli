@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with hypo-cli. If not, see <http://www.gnu.org/licenses/>.
 
+shopt -s extglob
+
 URL="https://ryuslash.org/hypo"
 DATADIR=${XDG_DATA_HOME-"${HOME}/.local/share"}/hypo
 
@@ -151,7 +153,7 @@ eval set -- "$TEMP"
 
 while true; do
     case "$1" in
-        -s|--server) URL="$2"; shift 2;;
+        -s|--server) URL="${2%%+(/)}"; shift 2;;
         -d|--data-dir) DATADIR="$2"; shift 2;;
         --) shift; break;;
         *) echo "Unknown argument: $1"; exit 1;;
