@@ -98,7 +98,23 @@ function cmd_rm
         exit 1
     fi
 
-    curl -XDELETE "$URL/$1"
+    local headers_file="$(mktemp)"
+    local response="$(curl -D ${headers_file} -XDELETE "$URL/$1" 2>/dev/null)"
+
+    case $? in
+        0)
+            grep 404 "$headers_file" >/dev/null
+            if [[ $? == 0 ]]; then
+                echo "Couldn't find $1, not removed"
+            else
+                echo "$response"
+            fi
+            ;;
+        7) echo "Couldn't connect to ${URL}"; exit 1;;
+        *) echo "An unknown error occurred, curl exited with code $?";;
+    esac
+
+    rm "$headers_file"
 
     if [[ -e "$DATADIR/uploads" ]]; then
         sed -i "/^$1$/ d" $DATADIR/uploads
